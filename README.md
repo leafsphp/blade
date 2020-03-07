@@ -54,9 +54,7 @@ We can have this as our template `index.blade.php`
         <title>{{ $name }}</title>
     </head>
     <body>
-        <div class="container">
-            {{ $name }}
-		</div>
+        <div class="container">{{ $name }}</div>
     </body>
 </html>
 ```
