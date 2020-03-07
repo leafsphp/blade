@@ -49,6 +49,7 @@ echo $blade->render('index', ['name' => 'Michael Darko']);
 
 We can have this as our template `index.blade.php`
 ```php
+<!Doctype html>
 <html>
     <head>
         <title>{{ $name }}</title>
