@@ -1,6 +1,6 @@
 <?php
 
-namespace Jenssegers\Blade;
+namespace Leaf;
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\Container as ContainerInterface;
@@ -29,10 +29,24 @@ class Blade implements FactoryContract
      */
     private $compiler;
 
-    public function __construct($viewPaths, string $cachePath, ContainerInterface $container = null)
+    public function __construct($viewPaths  = null, string $cachePath = null, ContainerInterface $container = null)
     {
         $this->container = $container ?: new Container;
 
+        if ($viewPaths != null && $cachePath != null) {
+            $this->setupContainer((array) $viewPaths, $cachePath);
+            (new ViewServiceProvider($this->container))->register();
+
+            $this->factory = $this->container->get('view');
+            $this->compiler = $this->container->get('blade.compiler');
+        }
+    }
+
+    /**
+     * Configuation for template and cache directories
+     */
+    public function configure($viewPaths, $cachePath)
+    {
         $this->setupContainer((array) $viewPaths, $cachePath);
         (new ViewServiceProvider($this->container))->register();
 
@@ -40,11 +54,23 @@ class Blade implements FactoryContract
         $this->compiler = $this->container->get('blade.compiler');
     }
 
+    /**
+     * Render your blade template,
+     * 
+     * A shorter version of the original `make` command. 
+     * You can optionally pass data into the view as a second parameter
+     */
     public function render(string $view, array $data = [], array $mergeData = []): string
     {
         return $this->make($view, $data, $mergeData)->render();
     }
 
+    /**
+     * Render your blade template,
+     * 
+     * You can optionally pass data into the view as a second parameter.
+     * Don't forget to chain the `render` method
+     */
     public function make($view, $data = [], $mergeData = []): View
     {
         return $this->factory->make($view, $data, $mergeData);
@@ -55,6 +81,9 @@ class Blade implements FactoryContract
         return $this->compiler;
     }
 
+    /**
+     * Create your own custom directive
+     */
     public function directive(string $name, callable $handler)
     {
         $this->compiler->directive($name, $handler);

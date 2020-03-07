@@ -1,12 +1,16 @@
 {
-    "name": "jenssegers/blade",
-    "description": "The standalone version of Laravel's Blade templating engine for use outside of Laravel.",
-    "keywords": ["laravel", "blade", "template", "view", "render"],
+    "name": "leafs/blade",
+    "description": "Leaf PHP Framework adaptation of jenssegers/blade package",
+    "keywords": ["leaf", "leafMVC", "laravel", "blade", "template", "view", "render"],
+    "homepage": "https://leaf-docs.netlify.com/v2.0/views/blade.html",
     "license" : "MIT",
+    "type": "library",
     "authors": [
         {
-            "name": "Jens Segers",
-            "homepage": "https://jenssegers.com"
+            "name": "Michael Darko",
+            "email": "mickdd22@gmail.com",
+            "homepage": "https://mychi.netlify.com",
+            "role": "Developer"
         }
     ],
     "require": {
@@ -19,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Jenssegers\\Blade\\": "src/"
+            "Leaf\\": "src/"
         }
     },
     "minimum-stability": "dev",
