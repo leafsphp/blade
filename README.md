@@ -38,13 +38,27 @@ $blade->configure("app/views", "app/views/cache");
 ```
 
 ```php
-echo $blade->make('homepage', ['name' => 'Michael Darko'])->render();
+echo $blade->make('index', ['name' => 'Michael Darko'])->render();
 ```
 
 Alternatively you can use the shorthand method `render`:
 
 ```php
-echo $blade->render('homepage', ['name' => 'Michael Darko']);
+echo $blade->render('index', ['name' => 'Michael Darko']);
+```
+
+We can have this as our template `index.blade.php`
+```php
+<html>
+    <head>
+        <title>{{ $name }}</title>
+    </head>
+    <body>
+        <div class="container">
+            {{ $name }}
+		</div>
+    </body>
+</html>
 ```
 
 You can also extend Blade using the `directive()` function:
