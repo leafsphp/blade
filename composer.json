@@ -2,7 +2,6 @@
     "name": "leafs/blade",
     "description": "Leaf PHP Framework adaptation of jenssegers/blade package",
     "keywords": ["leaf", "leafMVC", "laravel", "blade", "template", "view", "render"],
-    "homepage": "https://leaf-docs.netlify.com/v2.0/views/blade.html",
     "license" : "MIT",
     "type": "library",
     "authors": [
@@ -15,7 +14,7 @@
     ],
     "require": {
         "php": ">=7.0",
-        "illuminate/view": "^5.5|^6.0"
+        "illuminate/view": "^5.5|^6.0|^7.0|^8.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0|^7.0",

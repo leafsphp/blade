@@ -1,10 +1,13 @@
 # Leaf Blade v1.2.3 - 7th March, 2020
-## Changelog
-### Added
+
+## Added
+
 - Added Configure Method
 
-### Changed
+## Changed
+
 - Made directory selection optional on Blade init
 
-### Removed
-- Nothing was removed 
+## Removed
+
+- Nothing was removed
