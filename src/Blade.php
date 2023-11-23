@@ -2,9 +2,7 @@
 
 namespace Leaf;
 
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\Container as ContainerInterface;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory as FactoryContract;
 use Illuminate\Contracts\View\View;
 use Illuminate\Events\Dispatcher;
@@ -17,7 +15,7 @@ use Illuminate\View\ViewServiceProvider;
 class Blade implements FactoryContract
 {
     /**
-     * @var Application
+     * @var BladeContainer
      */
     protected $container;
 
@@ -33,7 +31,7 @@ class Blade implements FactoryContract
 
     public function __construct($viewPaths  = null, string $cachePath = null, ContainerInterface $container = null)
     {
-        $this->container = $container ?: new Container;
+        $this->container = $container ?: new \Leaf\BladeContainer();
 
         if ($viewPaths != null && $cachePath != null) {
             $this->configure($viewPaths, $cachePath);
@@ -54,8 +52,8 @@ class Blade implements FactoryContract
 
     /**
      * Render your blade template,
-     * 
-     * A shorter version of the original `make` command. 
+     *
+     * A shorter version of the original `make` command.
      * You can optionally pass data into the view as a second parameter
      */
     public function render(string $view, array $data = [], array $mergeData = []): string
@@ -65,7 +63,7 @@ class Blade implements FactoryContract
 
     /**
      * Render your blade template,
-     * 
+     *
      * You can optionally pass data into the view as a second parameter.
      * Don't forget to chain the `render` method
      */
@@ -147,10 +145,10 @@ class Blade implements FactoryContract
         }, true);
 
         $this->container->bindIf('config', function () use ($viewPaths, $cachePath) {
-            return [
+            return new Config([
                 'view.paths' => $viewPaths,
                 'view.compiled' => $cachePath,
-            ];
+            ]);
         }, true);
 
         Facade::setFacadeApplication($this->container);
