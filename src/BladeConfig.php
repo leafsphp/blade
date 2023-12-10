@@ -6,7 +6,7 @@ use ArrayAccess;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Traits\Macroable;
 
-class Config implements ArrayAccess
+class BladeConfig implements ArrayAccess
 {
     use Macroable;
 
