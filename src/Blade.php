@@ -145,7 +145,7 @@ class Blade implements FactoryContract
         }, true);
 
         $this->container->bindIf('config', function () use ($viewPaths, $cachePath) {
-            return new Config([
+            return new BladeConfig([
                 'view.paths' => $viewPaths,
                 'view.compiled' => $cachePath,
             ]);
