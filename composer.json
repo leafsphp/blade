@@ -1,34 +1,34 @@
 {
-    "name": "leafs/blade",
-    "description": "Leaf PHP Framework adaptation of jenssegers/blade package",
-    "keywords": ["leaf", "leafMVC", "laravel", "blade", "template", "view", "render"],
-    "license" : "MIT",
-    "type": "library",
-    "authors": [
-        {
-            "name": "Michael Darko",
-            "email": "mickdd22@gmail.com",
-            "homepage": "https://mychi.netlify.app",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "php": ">=7.3|^8.0",
-        "illuminate/view": "^8.0|^9.0|^10.0"
-    },
-    "require-dev": {
-        "pestphp/pest": "^1.0|^2.25"
-    },
-    "autoload": {
-        "psr-4": {
-            "Leaf\\": "src/"
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "config": {
-        "allow-plugins": {
-            "pestphp/pest-plugin": true
-        }
+  "name": "leafs/blade",
+  "description": "Leaf PHP Framework adaptation of jenssegers/blade package",
+  "keywords": [
+    "leaf",
+    "leafMVC",
+    "laravel",
+    "blade",
+    "template",
+    "view",
+    "render"
+  ],
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Michael Darko",
+      "email": "mickdd22@gmail.com",
+      "homepage": "https://mychi.netlify.app",
+      "role": "Developer"
     }
+  ],
+  "require": {
+    "php": ">=7.4|^8.0",
+    "jenssegers/blade": "^1.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Leaf\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }

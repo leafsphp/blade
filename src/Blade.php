@@ -2,52 +2,21 @@
 
 namespace Leaf;
 
-use Illuminate\Contracts\Container\Container as ContainerInterface;
-use Illuminate\Contracts\View\Factory as FactoryContract;
-use Illuminate\Contracts\View\View;
-use Illuminate\Events\Dispatcher;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Facade;
-use Illuminate\View\Compilers\BladeCompiler;
-use Illuminate\View\Factory;
-use Illuminate\View\ViewServiceProvider;
-
-class Blade implements FactoryContract
+class Blade
 {
-    /**
-     * @var BladeContainer
-     */
-    protected $container;
+    protected $blade;
 
-    /**
-     * @var Factory
-     */
-    private $factory;
-
-    /**
-     * @var BladeCompiler
-     */
-    private $compiler;
-
-    public function __construct($viewPaths  = null, string $cachePath = null, ContainerInterface $container = null)
+    public function __construct(string $viewPaths = null, string $cachePath = null)
     {
-        $this->container = $container ?: new \Leaf\BladeContainer();
-
-        if ($viewPaths != null && $cachePath != null) {
-            $this->configure($viewPaths, $cachePath);
-        }
+        // Just to maintain compatibility with the original Leaf Blade
     }
 
     /**
      * Configure your view and cache directories
      */
-    public function configure($viewPaths, $cachePath)
+    public function configure(string $viewPaths, string $cachePath)
     {
-        $this->setupContainer((array) $viewPaths, $cachePath);
-        (new ViewServiceProvider($this->container))->register();
-
-        $this->factory = $this->container->get('view');
-        $this->compiler = $this->container->get('blade.compiler');
+        $this->blade = new \Jenssegers\Blade\Blade($viewPaths, $cachePath);
     }
 
     /**
@@ -56,9 +25,9 @@ class Blade implements FactoryContract
      * A shorter version of the original `make` command.
      * You can optionally pass data into the view as a second parameter
      */
-    public function render(string $view, array $data = [], array $mergeData = []): string
+    public function render(string $view, $data = [], $mergeData = [])
     {
-        return $this->make($view, $data, $mergeData)->render();
+        return $this->make($view, $data, $mergeData);
     }
 
     /**
@@ -67,90 +36,25 @@ class Blade implements FactoryContract
      * You can optionally pass data into the view as a second parameter.
      * Don't forget to chain the `render` method
      */
-    public function make($view, $data = [], $mergeData = []): View
+    public function make(string $view, $data = [], $mergeData = []): string
     {
-        return $this->factory->make($view, $data, $mergeData);
-    }
-
-    public function compiler(): BladeCompiler
-    {
-        return $this->compiler;
+        return $this->blade->make($view, $data, $mergeData)->render();
     }
 
     /**
-     * Create your own custom directive
+     * Add a new namespace to the loader
      */
     public function directive(string $name, callable $handler)
     {
-        $this->compiler->directive($name, $handler);
+        $this->blade->directive($name, $handler);
     }
 
-    public function if($name, callable $callback)
+    /**
+     * Summary of blade
+     * @return \Jenssegers\Blade\Blade
+     */
+    public function blade()
     {
-        $this->compiler->if($name, $callback);
-    }
-
-    public function exists($view): bool
-    {
-        return $this->factory->exists($view);
-    }
-
-    public function file($path, $data = [], $mergeData = []): View
-    {
-        return $this->factory->file($path, $data, $mergeData);
-    }
-
-    public function share($key, $value = null)
-    {
-        return $this->factory->share($key, $value);
-    }
-
-    public function composer($views, $callback): array
-    {
-        return $this->factory->composer($views, $callback);
-    }
-
-    public function creator($views, $callback): array
-    {
-        return $this->factory->creator($views, $callback);
-    }
-
-    public function addNamespace($namespace, $hints): self
-    {
-        $this->factory->addNamespace($namespace, $hints);
-
-        return $this;
-    }
-
-    public function replaceNamespace($namespace, $hints): self
-    {
-        $this->factory->replaceNamespace($namespace, $hints);
-
-        return $this;
-    }
-
-    public function __call(string $method, array $params)
-    {
-        return call_user_func_array([$this->factory, $method], $params);
-    }
-
-    protected function setupContainer(array $viewPaths, string $cachePath)
-    {
-        $this->container->bindIf('files', function () {
-            return new Filesystem;
-        }, true);
-
-        $this->container->bindIf('events', function () {
-            return new Dispatcher;
-        }, true);
-
-        $this->container->bindIf('config', function () use ($viewPaths, $cachePath) {
-            return new BladeConfig([
-                'view.paths' => $viewPaths,
-                'view.compiled' => $cachePath,
-            ]);
-        }, true);
-
-        Facade::setFacadeApplication($this->container);
+        return $this->blade;
     }
 }
