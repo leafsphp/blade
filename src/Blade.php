@@ -17,6 +17,7 @@ class Blade
     public function configure(string $viewPaths, string $cachePath)
     {
         $this->blade = new \Jenssegers\Blade\Blade($viewPaths, $cachePath);
+        return $this->blade;
     }
 
     /**
