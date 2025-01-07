@@ -17,6 +17,8 @@ class Blade
     public function configure(string $viewPaths, string $cachePath)
     {
         $this->blade = new \Jenssegers\Blade\Blade($viewPaths, $cachePath);
+        $this->setupDefaultDirectives();
+
         return $this->blade;    // Temporary Fix: Issue #5
     }
 
@@ -57,5 +59,43 @@ class Blade
     public function blade()
     {
         return $this->blade;
+    }
+
+    /**
+     * Setup default directives
+     */
+    protected function setupDefaultDirectives()
+    {
+        $this->directive('csrf', function ($expression) {
+            return "<?php echo function_exists('csrf') && csrf()->form(); ?>";
+        });
+
+        $this->directive('method', function ($expression) {
+            return "<?php echo '<input type=\"hidden\" name=\"_method\" value=\"' . $expression . '\" />'; ?>";
+        });
+
+        $this->directive('json', function ($expression) {
+            return "<?php echo json_encode($expression); ?>";
+        });
+
+        $this->directive('vite', function ($expression) {
+            return "<?php echo vite($expression); ?>";
+        });
+
+        $this->directive('meta', function ($expression) {
+            return "<?php echo Meta($expression); ?>";
+        });
+
+        $this->directive('icon', function ($expression) {
+            return "<?php echo Icon($expression); ?>";
+        });
+
+        $this->directive('jsIcon', function ($expression) {
+            return "<?php echo e(Icon($expression)); ?>";
+        });
+
+        $this->directive('alpine', function ($expression) {
+            return '<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>';
+        });
     }
 }
