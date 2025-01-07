@@ -53,12 +53,20 @@ class Blade
     }
 
     /**
-     * Summary of blade
+     * Return actual blade instance
      * @return \Jenssegers\Blade\Blade
      */
     public function blade()
     {
         return $this->blade;
+    }
+
+    /**
+     * Hook into the blade compiler
+     */
+    public function compiler()
+    {
+        return $this->blade->compiler();
     }
 
     /**
@@ -96,6 +104,118 @@ class Blade
 
         $this->directive('alpine', function ($expression) {
             return '<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>';
+        });
+
+        $this->directive('isNull', function ($expression) {
+            return "<?php if (is_null($expression)) : ?>";
+        });
+
+        $this->directive('endisNull', function ($expression) {
+            return "<?php endif; ?>";
+        });
+
+        $this->compiler()->directive('env', function ($expression) {
+            if (empty($expression)) {
+                return "<?php echo _env('APP_ENV'); ?>";
+            }
+
+            return "<?php if (strtolower(_env('APP_ENV')) === strtolower($expression)) : ?>";
+        });
+
+        $this->directive('session', function ($expression) {
+            return implode('', [
+                "<?php if (session()->has($expression)) : ?>",
+                "<?php if (isset(\$value)) { \$___originalCurrentSessionValue = \$value; } ?>",
+                "<?php \$value = session()->get($expression); ?>"
+            ]);
+        });
+
+        $this->directive('endsession', function ($expression) {
+            return implode('', [
+                "<?php unset(\$value); ?>",
+                "<?php if (isset(\$___originalCurrentSessionValue)) { \$value = \$___originalCurrentSessionValue; } ?>",
+                "<?php endif; ?>"
+            ]);
+        });
+
+        $this->directive('flash', function ($expression) {
+            return implode('', [
+                "<?php if (isset(\$message)) { \$___originalCurrentFlashValue = \$message; } ?>",
+                "<?php if (\$message = flash()->display($expression)) : ?>",
+            ]);
+        });
+
+        $this->directive('endflash', function ($expression) {
+            return implode('', [
+                "<?php unset(\$message); ?>",
+                "<?php if (isset(\$___originalCurrentFlashValue)) { \$message = \$___originalCurrentFlashValue; } ?>",
+                "<?php endif; ?>",
+            ]);
+        });
+
+        $this->directive('disabled', function ($expression) {
+            return "<?php echo $expression ? 'disabled' : ''; ?>";
+        });
+
+        $this->directive('selected', function ($expression) {
+            return "<?php echo $expression ? 'selected' : ''; ?>";
+        });
+
+        $this->directive('checked', function ($expression) {
+            return "<?php echo $expression ? 'checked' : ''; ?>";
+        });
+
+        $this->directive('readonly', function ($expression) {
+            return "<?php echo $expression ? 'readonly' : ''; ?>";
+        });
+
+        $this->directive('required', function ($expression) {
+            return "<?php echo $expression ? 'required' : ''; ?>";
+        });
+
+        $this->directive('use', function ($expression) {
+            $expression = preg_replace('/[\'"]/', '', $expression);
+            return "<?php use $expression; ?>";
+        });
+
+        $this->compiler()->directive('auth', function ($expression) {
+            return "<?php if (!!auth($expression)->user()) : ?>";
+        });
+
+        $this->compiler()->directive('guest', function ($expression) {
+            return "<?php if (!auth($expression)->user()) : ?>";
+        });
+
+        $this->directive('is', function ($expression) {
+            return "<?php if (auth()->user()->is($expression)) : ?>";
+        });
+
+        $this->directive('endis', function ($expression) {
+            return "<?php endif; ?>";
+        });
+
+        $this->directive('isnot', function ($expression) {
+            return "<?php if (auth()->user()->isNot($expression)) : ?>";
+        });
+
+        $this->directive('endisnot', function ($expression) {
+            return "<?php endif; ?>";
+        });
+
+        $this->directive('can', function ($expression) {
+            return "<?php if (auth()->user()->can($expression)) : ?>";
+        });
+
+        $this->directive('endcan', function ($expression) {
+            return "<?php endif; ?>";
+        });
+
+        $this->directive('cannot', function ($expression) {
+            return "<?php if (auth()->user()->cannot($expression)) : ?>";
+        });
+
+        $this->directive('endcannot', function ($expression) {
+            return "<?php endif; ?>";
         });
     }
 }
