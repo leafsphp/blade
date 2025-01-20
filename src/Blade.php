@@ -102,7 +102,7 @@ class Blade
         });
 
         $this->directive('method', function ($expression) {
-            return "<?php echo '<input type=\"hidden\" name=\"_method\" value=\"' . $expression . '\" />'; ?>";
+            return "<?php echo '<input type=\"hidden\" name=\"_METHOD\" value=\"' . $expression . '\" />'; ?>";
         });
 
         $this->directive('json', function ($expression) {
@@ -143,6 +143,14 @@ class Blade
             }
 
             return "<?php if (strtolower(_env('APP_ENV')) === strtolower($expression)) : ?>";
+        });
+
+        $this->compiler()->directive('endenv', function ($expression) {
+            return "<?php endif; ?>";
+        });
+
+        $this->directive('getenv', function ($expression) {
+            return "<?php echo _env($expression); ?>";
         });
 
         $this->directive('session', function ($expression) {
