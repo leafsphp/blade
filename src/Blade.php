@@ -261,6 +261,22 @@ class Blade
             return "<?php echo ViewsPath($expression); ?>";
         });
 
+        $this->compiler()->directive('route', function ($expression) {
+            return "<?php echo app()->route($expression)['path'] ?? ''; ?>";
+        });
+
+        $this->compiler()->directive('viteReactRefresh', function ($expression) {
+            return "<?php echo \Leaf\Vite::reactRefresh(); ?>";
+        });
+
+        $this->compiler()->directive('inertiaHead', function ($expression) {
+            return '<?php if (!isset($__inertiaSsrDispatched)) { $__inertiaSsrDispatched = true; $__inertiaSsrResponse = (new \Leaf\Inertia\Ssr\Gateway())->dispatch($page); }  if ($__inertiaSsrResponse) { echo $__inertiaSsrResponse->head; } ?>';
+        });
+
+        $this->compiler()->directive('inertia', function ($expression) {
+            return '<?php if (!isset($__inertiaSsrDispatched)) { $__inertiaSsrDispatched = true; $__inertiaSsrResponse = (new \Leaf\Inertia\Ssr\Gateway())->dispatch($page); }  if ($__inertiaSsrResponse) { echo $__inertiaSsrResponse->body; } else { ?><div id="app" data-page="<?php echo e(json_encode($page)); ?>"></div><?php } ?>';
+        });
+
         $this->directive('toastContainer', function ($expression) {
             return <<<HTML
             <div class="relative w-auto h-auto" x-data>
