@@ -2,13 +2,39 @@
 
 namespace Leaf;
 
+use Illuminate\Config\Repository;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\View;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Facade;
+use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\View\Factory;
+use Illuminate\View\ViewServiceProvider;
+use Leaf\Blade\Container;
+
 class Blade
 {
-    protected $blade;
+    /**
+     * @var Application
+     */
+    protected $container;
+
+    /**
+     * @var Factory
+     */
+    private $factory;
+
+    /**
+     * @var BladeCompiler
+     */
+    private $compiler;
 
     public function __construct(?string $viewPaths = null, ?string $cachePath = null)
     {
-        // Just to maintain compatibility with the original Leaf Blade
+        if ($viewPaths) {
+            $this->configure($viewPaths, $cachePath);
+        }
     }
 
     /**
@@ -17,7 +43,7 @@ class Blade
      * @param string|array $viewPaths The path to your view or an array of paths
      * @param string|null $cachePath The path to your cache directory
      * 
-     * @return \Jenssegers\Blade\Blade
+     * @return \Leaf\Blade
      */
     public function configure($viewPaths, ?string $cachePath = null)
     {
@@ -26,10 +52,17 @@ class Blade
             $viewPaths = $viewPaths['views'] ?? null;
         }
 
-        $this->blade = new \Jenssegers\Blade\Blade($viewPaths, $cachePath);
+        $this->container = Container::getInstance();
+
+        $this->setupContainer((array) $viewPaths, $cachePath);
+        (new ViewServiceProvider($this->container))->register();
+
+        $this->factory = $this->container->get('view');
+        $this->compiler = $this->container->get('blade.compiler');
+
         $this->setupDefaultDirectives();
 
-        return $this->blade;
+        return $this;
     }
 
     /**
@@ -38,7 +71,7 @@ class Blade
      * @param string|array $viewPaths The path to your view or an array of paths
      * @param string|null $cachePath The path to your cache directory
      * 
-     * @return \Jenssegers\Blade\Blade
+     * @return \Leaf\Blade
      */
     public function config($viewPaths, ?string $cachePath = null)
     {
@@ -51,7 +84,7 @@ class Blade
      * A shorter version of the original `make` command.
      * You can optionally pass data into the view as a second parameter
      */
-    public function render(string $view, $data = [], $mergeData = [])
+    public function render(string $view, $data = [], $mergeData = []): string
     {
         return $this->make($view, $data, $mergeData);
     }
@@ -64,7 +97,7 @@ class Blade
      */
     public function make(string $view, $data = [], $mergeData = []): string
     {
-        return $this->blade->make($view, $data, $mergeData)->render();
+        return $this->factory->make($view, $data, $mergeData)->render();
     }
 
     /**
@@ -72,16 +105,16 @@ class Blade
      */
     public function directive(string $name, callable $handler)
     {
-        $this->blade->directive($name, $handler);
+        $this->compiler()->directive($name, $handler);
     }
 
     /**
      * Return actual blade instance
-     * @return \Jenssegers\Blade\Blade
+     * @return \Leaf\Blade
      */
     public function blade()
     {
-        return $this->blade;
+        return $this;
     }
 
     /**
@@ -89,7 +122,56 @@ class Blade
      */
     public function compiler()
     {
-        return $this->blade->compiler();
+        return $this->compiler;
+    }
+
+    public function if($name, callable $callback)
+    {
+        $this->compiler->if($name, $callback);
+    }
+
+    public function exists($view): bool
+    {
+        return $this->factory->exists($view);
+    }
+
+    public function file($path, $data = [], $mergeData = []): View
+    {
+        return $this->factory->file($path, $data, $mergeData);
+    }
+
+    public function share($key, $value = null)
+    {
+        return $this->factory->share($key, $value);
+    }
+
+    public function composer($views, $callback): array
+    {
+        return $this->factory->composer($views, $callback);
+    }
+
+    public function creator($views, $callback): array
+    {
+        return $this->factory->creator($views, $callback);
+    }
+
+    public function addNamespace($namespace, $hints): self
+    {
+        $this->factory->addNamespace($namespace, $hints);
+
+        return $this;
+    }
+
+    public function replaceNamespace($namespace, $hints): self
+    {
+        $this->factory->replaceNamespace($namespace, $hints);
+
+        return $this;
+    }
+
+    public function __call(string $method, array $params)
+    {
+        return call_user_func_array([$this->factory, $method], $params);
     }
 
     /**
@@ -647,5 +729,30 @@ class Blade
             </script>
 HTML;
         });
+    }
+
+    protected function setupContainer(array $viewPaths, string $cachePath)
+    {
+        $this->container->bindIf('files', function () {
+            return new Filesystem;
+        }, true);
+
+        $this->container->bindIf('events', function () {
+            return new Dispatcher;
+        }, true);
+
+        $this->container->bindIf('config', function () use ($viewPaths, $cachePath) {
+            return new Repository([
+                'view.paths' => $viewPaths,
+                'view.compiled' => $cachePath,
+            ]);
+        }, true);
+
+        $this->container->bindIf('blade.compiler', function ($app) use ($cachePath) {
+            return new BladeCompiler($app['files'], $cachePath);
+        });
+
+        Container::setInstance($this->container);
+        Facade::setFacadeApplication($this->container);
     }
 }

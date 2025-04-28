@@ -22,7 +22,8 @@
   ],
   "require": {
     "php": ">=7.4|^8.0",
-    "jenssegers/blade": "^1.4"
+    "illuminate/view": "^8.0|^10.0|^12.0",
+    "illuminate/config": "^8.0|^10.0|^12.0"
   },
   "autoload": {
     "psr-4": {
