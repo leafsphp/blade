@@ -292,11 +292,11 @@ class Blade
         });
 
         $this->compiler()->directive('auth', function ($expression) {
-            return "<?php if (!!auth($expression)->user()) : ?>";
+            return "<?php if (function_exists('auth') && !!auth($expression)->user()) : ?>";
         });
 
         $this->compiler()->directive('guest', function ($expression) {
-            return "<?php if (!auth($expression)->user()) : ?>";
+            return "<?php if (!function_exists('auth') || (function_exists('auth') && !auth($expression)->user())) : ?>";
         });
 
         $this->directive('is', function ($expression) {
