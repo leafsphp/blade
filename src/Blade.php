@@ -39,10 +39,10 @@ class Blade
 
     /**
      * Configure your view and cache directories
-     * 
+     *
      * @param string|array $viewPaths The path to your view or an array of paths
      * @param string|null $cachePath The path to your cache directory
-     * 
+     *
      * @return \Leaf\Blade
      */
     public function configure($viewPaths, ?string $cachePath = null)
@@ -67,10 +67,10 @@ class Blade
 
     /**
      * Configure your view and cache directories
-     * 
+     *
      * @param string|array $viewPaths The path to your view or an array of paths
      * @param string|null $cachePath The path to your cache directory
-     * 
+     *
      * @return \Leaf\Blade
      */
     public function config($viewPaths, ?string $cachePath = null)
@@ -189,6 +189,14 @@ class Blade
 
         $this->directive('json', function ($expression) {
             return "<?php echo json_encode($expression); ?>";
+        });
+
+        $this->directive('lingo', function ($expression) {
+            return "<?php echo lingo($expression); ?>";
+        });
+
+        $this->directive('tl', function ($expression) {
+            return "<?php echo lingo($expression); ?>";
         });
 
         $this->directive('vite', function ($expression) {
