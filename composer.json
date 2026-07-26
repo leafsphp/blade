@@ -1,35 +1,40 @@
 {
-  "name": "leafs/blade",
-  "description": "Leaf PHP Framework adaptation of jenssegers/blade package",
-  "keywords": [
-    "leaf",
-    "leafMVC",
-    "laravel",
-    "blade",
-    "template",
-    "view",
-    "render"
-  ],
-  "license": "MIT",
-  "type": "library",
-  "authors": [
-    {
-      "name": "Michael Darko",
-      "email": "mickdd22@gmail.com",
-      "homepage": "https://mychi.netlify.app",
-      "role": "Developer"
+    "name": "leafs/blade",
+    "description": "Leaf PHP Framework adaptation of jenssegers/blade package",
+    "keywords": [
+        "leaf",
+        "leafMVC",
+        "laravel",
+        "blade",
+        "template",
+        "view",
+        "render"
+    ],
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Michael Darko",
+            "email": "mickdd22@gmail.com",
+            "homepage": "https://mychi.netlify.app",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.4|^8.0",
+        "illuminate/view": "^8.0|^10.0|^12.0",
+        "illuminate/config": "^8.0|^10.0|^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Leaf\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "branch-alias": {
+            "dev-v5.x": "5.0.x-dev"
+        }
     }
-  ],
-  "require": {
-    "php": ">=7.4|^8.0",
-    "illuminate/view": "^8.0|^10.0|^12.0",
-    "illuminate/config": "^8.0|^10.0|^12.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Leaf\\": "src/"
-    }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
 }
