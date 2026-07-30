@@ -6,9 +6,9 @@
     <br><br><br>
 </p>
 
-[![Latest Stable Version](http://img.shields.io/github/release/jenssegers/blade.svg)](https://packagist.org/packages/leafs/blade) [![Build Status](http://img.shields.io/travis/jenssegers/blade.svg)](https://travis-ci.org/leafs/blade)
+[![Latest Stable Version](https://img.shields.io/packagist/v/leafs/blade)](https://packagist.org/packages/leafs/blade) [![Total Downloads](https://img.shields.io/packagist/dt/leafs/blade)](https://packagist.org/packages/leafs/blade) [![License](https://img.shields.io/packagist/l/leafs/blade)](https://packagist.org/packages/leafs/blade)
 
-The standalone version of [Laravel's Blade templating engine](https://laravel.com/docs/5.8/blade) for use outside of Laravel.
+Leaf's adaptation of [Laravel's Blade templating engine](https://laravel.com/docs/12.x/blade) for use outside of Laravel, with extra directives for the Leaf ecosystem.
 
 ## Installation
 
@@ -20,7 +20,7 @@ composer require leafs/blade
 
 ## Usage
 
-Create a Blade instance by passing it the folder(s) where your view files are located, and a cache folder. Render a template by calling the `make` method. More information about the Blade templating engine can be found on http://laravel.com/docs/5.8/blade.
+Create a Blade instance by passing it the folder(s) where your view files are located, and a cache folder. Render a template by calling the `make` method. More information about the Blade templating engine can be found on https://laravel.com/docs/12.x/blade.
 
 ```php
 use Leaf\Blade;
@@ -74,4 +74,4 @@ Which allows you to use the following in your blade template:
 Current date: @datetime($date)
 ```
 
-The Blade instances passes all methods to the internal view factory. So methods such as `exists`, `file`, `share`, `composer` and `creator` are available as well. Check out the [original documentation](https://laravel.com/docs/5.8/views) for more information.
+The Blade instances passes all methods to the internal view factory. So methods such as `exists`, `file`, `share`, `composer` and `creator` are available as well. Check out the [original documentation](https://laravel.com/docs/12.x/views) for more information.

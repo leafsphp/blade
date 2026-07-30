@@ -224,7 +224,7 @@ class Blade
         });
 
         $this->directive('endisNull', function ($expression) {
-            return "<?php endif; ?>";
+            return '<?php endif; ?>';
         });
 
         $this->compiler()->directive('env', function ($expression) {
@@ -236,7 +236,7 @@ class Blade
         });
 
         $this->compiler()->directive('endenv', function ($expression) {
-            return "<?php endif; ?>";
+            return '<?php endif; ?>';
         });
 
         $this->directive('getenv', function ($expression) {
@@ -246,31 +246,31 @@ class Blade
         $this->directive('session', function ($expression) {
             return implode('', [
                 "<?php if (session()->has($expression)) : ?>",
-                "<?php if (isset(\$value)) { \$___originalCurrentSessionValue = \$value; } ?>",
-                "<?php \$value = session()->get($expression); ?>"
+                '<?php if (isset($value)) { $___originalCurrentSessionValue = $value; } ?>',
+                "<?php \$value = session()->get($expression); ?>",
             ]);
         });
 
         $this->directive('endsession', function ($expression) {
             return implode('', [
-                "<?php unset(\$value); ?>",
-                "<?php if (isset(\$___originalCurrentSessionValue)) { \$value = \$___originalCurrentSessionValue; } ?>",
-                "<?php endif; ?>"
+                '<?php unset($value); ?>',
+                '<?php if (isset($___originalCurrentSessionValue)) { $value = $___originalCurrentSessionValue; } ?>',
+                '<?php endif; ?>',
             ]);
         });
 
         $this->directive('flash', function ($expression) {
             return implode('', [
-                "<?php if (isset(\$message)) { \$___originalCurrentFlashValue = \$message; } ?>",
+                '<?php if (isset($message)) { $___originalCurrentFlashValue = $message; } ?>',
                 "<?php if (\$message = flash()->display($expression)) : ?>",
             ]);
         });
 
         $this->directive('endflash', function ($expression) {
             return implode('', [
-                "<?php unset(\$message); ?>",
-                "<?php if (isset(\$___originalCurrentFlashValue)) { \$message = \$___originalCurrentFlashValue; } ?>",
-                "<?php endif; ?>",
+                '<?php unset($message); ?>',
+                '<?php if (isset($___originalCurrentFlashValue)) { $message = $___originalCurrentFlashValue; } ?>',
+                '<?php endif; ?>',
             ]);
         });
 
@@ -296,6 +296,7 @@ class Blade
 
         $this->directive('use', function ($expression) {
             $expression = preg_replace('/[\'"]/', '', $expression);
+
             return "<?php use $expression; ?>";
         });
 
@@ -312,7 +313,7 @@ class Blade
         });
 
         $this->directive('endis', function ($expression) {
-            return "<?php endif; ?>";
+            return '<?php endif; ?>';
         });
 
         $this->directive('isnot', function ($expression) {
@@ -320,7 +321,7 @@ class Blade
         });
 
         $this->directive('endisnot', function ($expression) {
-            return "<?php endif; ?>";
+            return '<?php endif; ?>';
         });
 
         $this->directive('can', function ($expression) {
@@ -328,7 +329,7 @@ class Blade
         });
 
         $this->directive('endcan', function ($expression) {
-            return "<?php endif; ?>";
+            return '<?php endif; ?>';
         });
 
         $this->directive('cannot', function ($expression) {
@@ -336,7 +337,7 @@ class Blade
         });
 
         $this->directive('endcannot', function ($expression) {
-            return "<?php endif; ?>";
+            return '<?php endif; ?>';
         });
 
         $this->directive('assets', function ($expression) {
@@ -742,11 +743,11 @@ HTML;
     protected function setupContainer(array $viewPaths, string $cachePath)
     {
         $this->container->bindIf('files', function () {
-            return new Filesystem;
+            return new Filesystem();
         }, true);
 
         $this->container->bindIf('events', function () {
-            return new Dispatcher;
+            return new Dispatcher();
         }, true);
 
         $this->container->bindIf('config', function () use ($viewPaths, $cachePath) {
