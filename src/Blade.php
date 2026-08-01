@@ -97,7 +97,18 @@ class Blade
      */
     public function make(string $view, $data = [], $mergeData = []): string
     {
-        return $this->factory->make($view, $data, $mergeData)->render();
+        if (!function_exists('crash')) {
+            return $this->factory->make($view, $data, $mergeData)->render();
+        }
+
+        $renderStartedAt = microtime(true);
+        $rendered = $this->factory->make($view, $data, $mergeData)->render();
+
+        crash()->leaveCrumb("view: $view", 'view', [
+            'ms' => round((microtime(true) - $renderStartedAt) * 1000, 2),
+        ], false);
+
+        return $rendered;
     }
 
     /**
