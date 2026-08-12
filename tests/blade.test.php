@@ -114,13 +114,17 @@ test('@method renders a hidden method field', function () {
 });
 
 test('@env branches on APP_ENV and @getenv echoes values', function () {
-    template('env', "@env('production') live @endenv\n@getenv('APP_ENV')");
+    template('env', "@env('production') live @endenv\n@env('local') dev @endenv\n@getenv('APP_ENV')");
 
+    // leaf 5 caches _env() for the whole process (leaf3's config tests pin
+    // that contract), so both branches are asserted from one env state
+    // instead of flipping APP_ENV between renders
     $_ENV['APP_ENV'] = 'production';
-    expect(blade()->render('env'))->toContain('live')->toContain('production');
+    $rendered = blade()->render('env');
 
-    $_ENV['APP_ENV'] = 'local';
-    expect(blade()->render('env'))->not->toContain('live')->toContain('local');
+    expect($rendered)->toContain('live')
+        ->not->toContain('dev')
+        ->toContain('production');
 });
 
 test('@auth hides content and @guest shows it when leaf auth is not installed', function () {
