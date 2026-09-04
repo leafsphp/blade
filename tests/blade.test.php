@@ -135,10 +135,30 @@ test('@auth hides content and @guest shows it when leaf auth is not installed', 
     expect($out)->toContain('public');
 });
 
-test('@csrf renders nothing when leaf csrf is not installed', function () {
+test('@csrf throws loudly when the csrf module is missing', function () {
+    template('csrf-missing', '<form>@csrf</form>');
+
+    // Must run before the module-present test below, which defines a global csrf().
+    expect(fn () => blade()->render('csrf-missing'))
+        ->toThrow(Exception::class, 'leafs/csrf module is not installed');
+});
+
+test('@csrf renders the csrf form when the module is present', function () {
     template('csrf', '[@csrf]');
 
-    expect(blade()->render('csrf'))->toBe('[]');
+    if (!function_exists('csrf')) {
+        function csrf()
+        {
+            return new class {
+                public function form()
+                {
+                    echo '<input type="hidden" name="_token" value="test" />';
+                }
+            };
+        }
+    }
+
+    expect(blade()->render('csrf'))->toBe('[<input type="hidden" name="_token" value="test" />]');
 });
 
 test('@use imports a class for the template', function () {

@@ -186,12 +186,39 @@ class Blade
     }
 
     /**
+     * Called when @csrf is rendered without the leafs/csrf module installed.
+     * A CSRF directive that silently outputs nothing leaves forms unprotected
+     * while looking protected, so this fails loudly instead: an exception in
+     * debug, a logged warning in production.
+     */
+    public static function csrfModuleMissing()
+    {
+        $message = '@csrf was rendered but the leafs/csrf module is not installed, so this form is NOT protected. Run `leaf install csrf` or `composer require leafs/csrf`, or remove the @csrf directive.';
+
+        $debug = true;
+
+        if (function_exists('app') && method_exists(app(), 'config')) {
+            $debug = filter_var(app()->config('debug'), FILTER_VALIDATE_BOOL);
+        }
+
+        if ($debug) {
+            throw new \RuntimeException($message);
+        }
+
+        trigger_error($message, E_USER_WARNING);
+    }
+
+    /**
      * Setup default directives
      */
     protected function setupDefaultDirectives()
     {
         $this->directive('csrf', function ($expression) {
             return "<?php echo function_exists('csrf') && csrf()->form(); ?>";
+        });
+
+        $this->directive('csrfHard', function ($expression) {
+            return "<?php if (function_exists('csrf')) { csrf()->form(); } else { \\Leaf\\Blade::csrfModuleMissing(); } ?>";
         });
 
         $this->directive('method', function ($expression) {
