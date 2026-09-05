@@ -135,11 +135,15 @@ test('@auth hides content and @guest shows it when leaf auth is not installed', 
     expect($out)->toContain('public');
 });
 
-test('@csrf throws loudly when the csrf module is missing', function () {
-    template('csrf-missing', '<form>@csrf</form>');
+test('@csrf stays silent without the module; @csrfHard fails loudly', function () {
+    template('csrf-missing', '[@csrf]');
+    template('csrf-hard-missing', '<form>@csrfHard</form>');
 
+    // @csrf is an activation contract: scaffolds carry it, and it renders
+    // nothing until leafs/csrf is installed. @csrfHard is the strict variant.
     // Must run before the module-present test below, which defines a global csrf().
-    expect(fn () => blade()->render('csrf-missing'))
+    expect(blade()->render('csrf-missing'))->toBe('[]');
+    expect(fn () => blade()->render('csrf-hard-missing'))
         ->toThrow(Exception::class, 'leafs/csrf module is not installed');
 });
 

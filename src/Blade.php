@@ -186,14 +186,14 @@ class Blade
     }
 
     /**
-     * Called when @csrf is rendered without the leafs/csrf module installed.
+     * Called when @csrfHard is rendered without the leafs/csrf module installed.
      * A CSRF directive that silently outputs nothing leaves forms unprotected
      * while looking protected, so this fails loudly instead: an exception in
      * debug, a logged warning in production.
      */
     public static function csrfModuleMissing()
     {
-        $message = '@csrf was rendered but the leafs/csrf module is not installed, so this form is NOT protected. Run `leaf install csrf` or `composer require leafs/csrf`, or remove the @csrf directive.';
+        $message = '@csrfHard was rendered but the leafs/csrf module is not installed, so this form is NOT protected. Run `leaf install csrf` or `composer require leafs/csrf`, or switch to @csrf if protection should stay optional here.';
 
         $debug = true;
 
